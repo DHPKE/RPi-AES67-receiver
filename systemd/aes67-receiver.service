@@ -1,0 +1,29 @@
+[Unit]
+Description=AES67 NMOS Audio Receiver
+After=network-online.target pipewire.service ptp4l.service
+Wants=network-online.target
+Requires=pipewire.service
+
+[Service]
+Type=simple
+User=aes67
+Group=audio
+ExecStart=/usr/local/bin/aes67-receiver /etc/aes67-receiver/config.json
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/log
+
+# Real-time scheduling
+LimitRTPRIO=95
+LimitMEMLOCK=infinity
+
+[Install]
+WantedBy=multi-user.target
