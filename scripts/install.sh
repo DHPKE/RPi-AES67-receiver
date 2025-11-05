@@ -53,6 +53,7 @@ make -j$(nproc)
 make install
 ldconfig
 cd ../..
+
 echo "Building AES67 receiver..."
 mkdir -p build
 cd build
@@ -60,19 +61,23 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 make -j$(nproc)
 make install
 cd ..
+
 echo "Setting up configuration..."
 mkdir -p /etc/aes67-receiver
 if [ ! -f /etc/aes67-receiver/config.json ]; then
     cp config/config.json /etc/aes67-receiver/
 fi
+
 echo "Creating service user..."
 if ! id -u aes67 > /dev/null 2>&1; then
     useradd -r -s /bin/false aes67
     usermod -aG audio aes67
 fi
+
 echo "Installing systemd service..."
 cp systemd/aes67-receiver.service /etc/systemd/system/
 systemctl daemon-reload
+
 echo "Configuring PipeWire..."
 mkdir -p /etc/pipewire
 cat > /etc/pipewire/pipewire.conf << 'EOF'
@@ -83,9 +88,11 @@ context.properties = {
     default.clock.max-quantum = 2048
 }
 EOF
+
 echo "Enabling services..."
 systemctl enable pipewire
 systemctl enable wireplumber
+
 echo ""
 echo "==================================="
 echo "Installation complete!"
@@ -97,3 +104,4 @@ echo "2. Setup PTP: sudo ./scripts/setup_ptp.sh eth0"
 echo "3. Edit configuration: /etc/aes67-receiver/config.json"
 echo "4. Start service: sudo systemctl start aes67-receiver"
 echo "5. Check status: sudo systemctl status aes67-receiver"
+echo ""

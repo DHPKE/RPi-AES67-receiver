@@ -4,6 +4,7 @@ project(aes67-nmos-receiver VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Find required packages
 find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(GSTREAMER REQUIRED gstreamer-1.0)
@@ -15,9 +16,11 @@ find_package(Boost REQUIRED COMPONENTS system thread filesystem)
 find_package(nlohmann_json REQUIRED)
 find_package(OpenSSL REQUIRED)
 
+# nmos-cpp (assumed to be installed)
 find_library(NMOS_CPP_LIB nmos-cpp REQUIRED)
 find_path(NMOS_CPP_INCLUDE nmos REQUIRED)
 
+# Source files
 set(SOURCES
     src/main.cpp
     src/aes67_receiver.cpp
@@ -27,8 +30,10 @@ set(SOURCES
     src/logger.cpp
 )
 
+# Create executable
 add_executable(aes67-receiver ${SOURCES})
 
+# Include directories
 target_include_directories(aes67-receiver PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${GSTREAMER_INCLUDE_DIRS}
@@ -39,6 +44,7 @@ target_include_directories(aes67-receiver PRIVATE
     ${Boost_INCLUDE_DIRS}
 )
 
+# Link libraries
 target_link_libraries(aes67-receiver PRIVATE
     ${GSTREAMER_LIBRARIES}
     ${GSTREAMER_APP_LIBRARIES}
@@ -52,6 +58,7 @@ target_link_libraries(aes67-receiver PRIVATE
     pthread
 )
 
+# Installation
 install(TARGETS aes67-receiver DESTINATION /usr/local/bin)
 install(DIRECTORY config/ DESTINATION /etc/aes67-receiver)
 install(FILES systemd/aes67-receiver.service DESTINATION /etc/systemd/system)
