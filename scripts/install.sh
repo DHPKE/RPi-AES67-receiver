@@ -22,6 +22,7 @@ apt-get install -y \
     libboost-all-dev \
     libssl-dev \
     libavahi-client-dev \
+    libavahi-compat-libdnssd-dev \
     nlohmann-json3-dev \
     libgstreamer1.0-dev \
     libgstreamer-plugins-base1.0-dev \
