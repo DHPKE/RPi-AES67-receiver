@@ -11,7 +11,6 @@ INTERFACE=${1:-eth0}
 
 echo "Configuring PTP on $INTERFACE..."
 
-# Create PTP configuration
 mkdir -p /etc/linuxptp
 
 cat > /etc/linuxptp/ptp4l.conf << EOF
@@ -40,7 +39,6 @@ max_frequency 900000000
 [$INTERFACE]
 EOF
 
-# Create systemd service for ptp4l
 cat > /etc/systemd/system/ptp4l.service << EOF
 [Unit]
 Description=PTP Boundary Clock
@@ -56,7 +54,6 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 
-# Enable and start PTP service
 systemctl daemon-reload
 systemctl enable ptp4l
 systemctl start ptp4l
