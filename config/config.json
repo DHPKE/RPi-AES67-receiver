@@ -1,0 +1,35 @@
+{
+  "node": {
+    "label": "RPi5 AES67 Receiver",
+    "description": "AES67 Audio Receiver with NMOS compatibility",
+    "tags": {
+      "location": "Studio A",
+      "device_type": "audio_receiver"
+    }
+  },
+  "receivers": [
+    {
+      "id": "receiver-1",
+      "label": "Main Stereo Receiver",
+      "description": "Primary stereo audio receiver",
+      "channels": 2,
+      "sample_rates": [44100, 48000, 96000],
+      "bit_depths": [16, 24]
+    }
+  ],
+  "network": {
+    "interface": "eth0",
+    "registry_url": "",
+    "node_port": 8080,
+    "use_mdns": true
+  },
+  "audio": {
+    "pipewire_node_name": "AES67-Receiver",
+    "buffer_size": 256,
+    "latency_ms": 5.0
+  },
+  "logging": {
+    "level": "info",
+    "file": "/var/log/aes67-receiver.log"
+  }
+}
