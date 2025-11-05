@@ -53,7 +53,7 @@ cmake .. \
     -DCMAKE_INSTALL_PREFIX=/usr/local \
     -DJWT_BUILD_EXAMPLES=OFF \
     -DJWT_BUILD_TESTS=OFF
-make -j$(nproc)
+make -j2
 make install
 cd ../..
 
