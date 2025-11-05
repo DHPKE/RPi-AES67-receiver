@@ -71,7 +71,7 @@ cmake .. \
     -DCMAKE_INSTALL_PREFIX=/usr/local \
     -DBUILD_TESTS=OFF \
     -DBUILD_EXAMPLES=OFF
-make -j$(nproc)
+make -j2
 make install
 ldconfig
 cd ../..
@@ -94,7 +94,7 @@ cmake .. \
     -DBUILD_SHARED_LIBS=ON \
     -DCMAKE_INSTALL_PREFIX=/usr/local \
     -DWEBSOCKETPP_INCLUDE_DIR=/usr/include
-make -j$(nproc)
+make -j2
 make install
 ldconfig
 cd ../../..
@@ -103,7 +103,7 @@ echo "Building AES67 receiver..."
 mkdir -p build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
-make -j$(nproc)
+make -j2
 make install
 cd ..
 
