@@ -40,6 +40,23 @@ apt-get install -y \
     libwebsocketpp-dev \
     libcpprest-dev
 
+echo "Building jwt-cpp..."
+if [ ! -d "jwt-cpp" ]; then
+    git clone https://github.com/Thalhammer/jwt-cpp.git
+fi
+
+cd jwt-cpp
+mkdir -p build
+cd build
+cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DJWT_BUILD_EXAMPLES=OFF \
+    -DJWT_BUILD_TESTS=OFF
+make -j$(nproc)
+make install
+cd ../..
+
 echo "Building nlohmann_json_schema_validator..."
 if [ ! -d "json-schema-validator" ]; then
     git clone https://github.com/pboettch/json-schema-validator.git
