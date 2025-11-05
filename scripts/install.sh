@@ -39,6 +39,25 @@ apt-get install -y \
     libwebsocketpp-dev \
     libcpprest-dev
 
+echo "Building nlohmann_json_schema_validator..."
+if [ ! -d "json-schema-validator" ]; then
+    git clone https://github.com/pboettch/json-schema-validator.git
+fi
+
+cd json-schema-validator
+mkdir -p build
+cd build
+cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DBUILD_SHARED_LIBS=ON \
+    -DCMAKE_INSTALL_PREFIX=/usr/local \
+    -DBUILD_TESTS=OFF \
+    -DBUILD_EXAMPLES=OFF
+make -j$(nproc)
+make install
+ldconfig
+cd ../..
+
 echo "Building nmos-cpp..."
 if [ ! -d "nmos-cpp" ]; then
     git clone --recurse-submodules https://github.com/sony/nmos-cpp.git
@@ -111,5 +130,5 @@ echo "1. Configure network: sudo ./scripts/setup_network.sh eth0"
 echo "2. Setup PTP: sudo ./scripts/setup_ptp.sh eth0"
 echo "3. Edit configuration: /etc/aes67-receiver/config.json"
 echo "4. Start service: sudo systemctl start aes67-receiver"
-echo "5. Check status: sudo systemctl status aes67](#)
-
+echo "5. Check status: sudo systemctl status aes67-receiver"
+echo ""
