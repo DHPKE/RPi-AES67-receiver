@@ -134,11 +134,10 @@ cmake .. \
     -DBUILD_SHARED_LIBS=ON \
     -DCMAKE_INSTALL_PREFIX=/usr/local \
     -DWEBSOCKETPP_INCLUDE_DIR=/usr/include \
-    -DBOOST_ROOT=/usr \
-    -DBoost_NO_SYSTEM_PATHS=OFF \
     -DBoost_USE_STATIC_LIBS=OFF \
-    -DBoost_USE_MULTITHREADED=ON
-
+    -DBoost_USE_MULTITHREADED=ON \
+    -DCMAKE_EXE_LINKER_FLAGS="-lboost_chrono"
+    
 # Build with single job to avoid OOM
 echo "Starting compilation (this is slow but stable)..."
 make -j1
