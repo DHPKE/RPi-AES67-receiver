@@ -658,8 +658,15 @@ ReceiverStatistics AES67Receiver::get_statistics() const { return impl_->get_sta
 AudioFormat AES67Receiver::get_audio_format() const { return impl_->get_audio_format(); }
 SDPInfo AES67Receiver::get_sdp_info() const { return impl_->get_sdp_info(); }
 std::string AES67Receiver::get_sender_id() const { return impl_->get_sender_id(); }
-void AES67Receiver::register_with_nmos(std::shared_ptr<NMOSNode> /*node*/) { /* TODO */ }
-void AES67Receiver::unregister_from_nmos() { /* TODO */ }
+void AES67Receiver::register_with_nmos(std::shared_ptr<NMOSNode> /*node*/) {
+    // TODO: Full integration requires calling nmos_node->register_receiver(shared_from_this())
+    // Currently, registration is handled by calling NMOSNode::register_receiver() directly
+    // from the application code (see main.cpp and examples)
+}
+void AES67Receiver::unregister_from_nmos() {
+    // TODO: Full integration requires calling nmos_node->unregister_receiver(id)
+    // Currently, unregistration is handled by the NMOSNode when it shuts down
+}
 void AES67Receiver::set_state_callback(StateCallback callback) { impl_->set_state_callback(std::move(callback)); }
 bool AES67Receiver::is_healthy() const { return impl_->is_healthy(); }
 void AES67Receiver::recover() { impl_->recover(); }

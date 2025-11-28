@@ -606,8 +606,14 @@ private:
     }
     
     void register_with_registry() {
-        // TODO: Implement IS-04 registration
-        LOG_INFO("Registering with NMOS registry: {}", network_config_.registry_url);
+        // NOTE: Full IS-04 registration requires HTTP POST to registry
+        // This is a stub implementation for peer-to-peer operation
+        // Real registration would involve:
+        // 1. POST /x-nmos/registration/v1.3/resource with node resource
+        // 2. Heartbeat via POST /x-nmos/registration/v1.3/health/nodes/{nodeId}
+        // 3. Register device, sources, flows, senders, receivers
+        LOG_INFO("NMOS registry registration (stub): {}", network_config_.registry_url);
+        LOG_WARNING("Full IS-04 registration not implemented - using peer-to-peer mode");
         registered_ = true;
         state_ = NMOSNodeState::Registered;
         
@@ -617,8 +623,9 @@ private:
     }
     
     void unregister_from_registry() {
-        // TODO: Implement IS-04 unregistration
-        LOG_INFO("Unregistering from NMOS registry");
+        // NOTE: Full IS-04 unregistration requires HTTP DELETE to registry
+        // This is a stub implementation
+        LOG_INFO("NMOS registry unregistration (stub)");
         registered_ = false;
         
         if (registration_callback_) {

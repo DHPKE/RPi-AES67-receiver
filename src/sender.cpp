@@ -311,8 +311,15 @@ SenderStatistics AES67Sender::get_statistics() const { return impl_->get_statist
 AudioFormat AES67Sender::get_audio_format() const { return impl_->get_audio_format(); }
 std::string AES67Sender::get_multicast_ip() const { return impl_->get_multicast_ip(); }
 uint16_t AES67Sender::get_port() const { return impl_->get_port(); }
-void AES67Sender::register_with_nmos(std::shared_ptr<NMOSNode> /*node*/) { /* TODO */ }
-void AES67Sender::unregister_from_nmos() { /* TODO */ }
+void AES67Sender::register_with_nmos(std::shared_ptr<NMOSNode> /*node*/) {
+    // TODO: Full integration requires calling nmos_node->register_sender(shared_from_this())
+    // Currently, registration is handled by calling NMOSNode::register_sender() directly
+    // from the application code (see main.cpp and examples)
+}
+void AES67Sender::unregister_from_nmos() {
+    // TODO: Full integration requires calling nmos_node->unregister_sender(id)
+    // Currently, unregistration is handled by the NMOSNode when it shuts down
+}
 void AES67Sender::set_state_callback(StateCallback callback) { impl_->set_state_callback(std::move(callback)); }
 bool AES67Sender::is_healthy() const { return impl_->is_healthy(); }
 void AES67Sender::recover() { impl_->recover(); }

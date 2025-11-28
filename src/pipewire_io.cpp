@@ -569,7 +569,10 @@ PipeWireState PipeWireInput::get_state() const { return impl_->get_state(); }
 AudioFormat PipeWireInput::get_format() const { return impl_->get_format(); }
 
 std::vector<PipeWireDevice> PipeWireInput::list_devices() {
-    // TODO: Implement device enumeration
+    // NOTE: Device enumeration requires a running PipeWire context
+    // For now, use 'pw-cli list-objects' or 'wpctl status' to discover devices
+    // and specify them by name in the configuration file
+    LOG_DEBUG("PipeWire device enumeration not yet implemented");
     return {};
 }
 
@@ -595,7 +598,10 @@ void PipeWireOutput::reconnect() { impl_->reconnect(); }
 size_t PipeWireOutput::get_available_frames() const { return impl_->get_available_frames(); }
 
 std::vector<PipeWireDevice> PipeWireOutput::list_devices() {
-    // TODO: Implement device enumeration
+    // NOTE: Device enumeration requires a running PipeWire context
+    // For now, use 'pw-cli list-objects' or 'wpctl status' to discover devices
+    // and specify them by name in the configuration file
+    LOG_DEBUG("PipeWire device enumeration not yet implemented");
     return {};
 }
 
@@ -623,17 +629,23 @@ public:
     bool is_initialized() const { return initialized_; }
     
     std::vector<PipeWireDevice> list_sources() const {
-        // TODO: Implement device enumeration
+        // NOTE: Device enumeration requires a full registry implementation
+        // For now, use command-line tools to discover devices
+        LOG_DEBUG("Source enumeration not yet implemented - use 'pw-cli list-objects'");
         return {};
     }
     
     std::vector<PipeWireDevice> list_sinks() const {
-        // TODO: Implement device enumeration
+        // NOTE: Device enumeration requires a full registry implementation
+        // For now, use command-line tools to discover devices
+        LOG_DEBUG("Sink enumeration not yet implemented - use 'pw-cli list-objects'");
         return {};
     }
     
     std::optional<PipeWireDevice> find_device(const std::string& name) const {
-        // TODO: Implement device lookup
+        // NOTE: Device lookup requires a full registry implementation
+        // For now, specify devices by name in the configuration file
+        LOG_DEBUG("Device lookup not yet implemented for: {}", name);
         return std::nullopt;
     }
     
