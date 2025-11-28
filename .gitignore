@@ -1,0 +1,42 @@
+# Build directories
+build/
+cmake-build-*/
+xcode-build/
+win-build/
+_codeql_build_dir/
+_codeql_detected_source_root
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Compiled files
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+
+# Generated files
+compile_commands.json
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+
+# Package managers
+vcpkg_installed/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp

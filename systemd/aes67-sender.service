@@ -1,5 +1,5 @@
 [Unit]
-Description=AES67 NMOS Audio Receiver
+Description=AES67 NMOS Audio Sender
 After=network-online.target pipewire.service ptp4l.service
 Wants=network-online.target
 Requires=pipewire.service
@@ -8,7 +8,7 @@ Requires=pipewire.service
 Type=simple
 User=aes67
 Group=audio
-ExecStart=/usr/local/bin/rpi-aes67 -c /etc/rpi-aes67/config.json -m receiver
+ExecStart=/usr/local/bin/rpi-aes67 -c /etc/rpi-aes67/config.json -m sender
 Restart=always
 RestartSec=5
 StandardOutput=journal

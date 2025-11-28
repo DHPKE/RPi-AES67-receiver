@@ -1,35 +1,58 @@
 {
   "node": {
-    "label": "RPi5 AES67 Receiver",
-    "description": "AES67 Audio Receiver with NMOS compatibility",
+    "id": "",
+    "label": "RPi5 AES67 Node",
+    "description": "Professional AES67 Sender/Receiver for Raspberry Pi 5",
     "tags": {
       "location": "Studio A",
-      "device_type": "audio_receiver"
+      "device_type": "raspberry_pi_5"
     }
   },
+  "senders": [
+    {
+      "id": "sender-1",
+      "label": "Main Output",
+      "description": "Primary audio output stream",
+      "channels": 2,
+      "sample_rate": 48000,
+      "bit_depth": 24,
+      "multicast_ip": "239.69.1.1",
+      "port": 5004,
+      "payload_type": 97,
+      "pipewire_source": "",
+      "enabled": true,
+      "packet_time_us": 1000
+    }
+  ],
   "receivers": [
     {
       "id": "receiver-1",
-      "label": "Main Stereo Receiver",
-      "description": "Primary stereo audio receiver",
+      "label": "Main Input",
+      "description": "Primary audio input stream",
       "channels": 2,
       "sample_rates": [44100, 48000, 96000],
-      "bit_depths": [16, 24]
+      "bit_depths": [16, 24],
+      "pipewire_sink": "",
+      "enabled": true
     }
   ],
   "network": {
     "interface": "eth0",
+    "ptp_domain": 0,
     "registry_url": "",
+    "enable_mdns": true,
     "node_port": 8080,
-    "use_mdns": true
+    "connection_port": 8081
   },
   "audio": {
-    "pipewire_node_name": "AES67-Receiver",
-    "buffer_size": 256,
-    "latency_ms": 5.0
+    "buffer_size_ms": 5.0,
+    "jitter_buffer_ms": 10.0,
+    "buffer_frames": 256,
+    "enable_sample_rate_conversion": true
   },
   "logging": {
     "level": "info",
-    "file": "/var/log/aes67-receiver.log"
+    "file": "/var/log/rpi-aes67.log",
+    "enable_console": true
   }
 }
