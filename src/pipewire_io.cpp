@@ -117,13 +117,14 @@ public:
             default: spa_format = SPA_AUDIO_FORMAT_S24_LE;
         }
         
+        struct spa_audio_info_raw audio_info = SPA_AUDIO_INFO_RAW_INIT(
+            .format = spa_format,
+            .rate = format_.sample_rate,
+            .channels = format_.channels
+        );
+
         const struct spa_pod *params[1];
-        params[0] = spa_format_audio_raw_build(&b, SPA_PARAM_EnumFormat,
-            &SPA_AUDIO_INFO_RAW_INIT(
-                .format = spa_format,
-                .channels = format_.channels,
-                .rate = format_.sample_rate
-            ));
+        params[0] = spa_format_audio_raw_build(&b, SPA_PARAM_EnumFormat, &audio_info);
         
         // Connect stream
         if (pw_stream_connect(stream_,
@@ -362,13 +363,14 @@ public:
             default: spa_format = SPA_AUDIO_FORMAT_S24_LE;
         }
         
+        struct spa_audio_info_raw audio_info = SPA_AUDIO_INFO_RAW_INIT(
+            .format = spa_format,
+            .rate = format_.sample_rate,
+            .channels = format_.channels
+        );
+
         const struct spa_pod *params[1];
-        params[0] = spa_format_audio_raw_build(&b, SPA_PARAM_EnumFormat,
-            &SPA_AUDIO_INFO_RAW_INIT(
-                .format = spa_format,
-                .channels = format_.channels,
-                .rate = format_.sample_rate
-            ));
+        params[0] = spa_format_audio_raw_build(&b, SPA_PARAM_EnumFormat, &audio_info);
         
         // Connect stream
         if (pw_stream_connect(stream_,
