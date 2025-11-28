@@ -3,7 +3,8 @@
 set -e
 
 echo "==================================="
-echo "AES67 NMOS Receiver Installation"
+echo "RPi-AES67 Installation"
+echo "Professional AES67 Sender/Receiver"
 echo "==================================="
 
 if [ "$EUID" -ne 0 ]; then 
@@ -35,27 +36,7 @@ apt-get install -y \
     cmake \
     git \
     pkg-config \
-    libssl-dev \
-    libavahi-client-dev \
-    libavahi-compat-libdnssd-dev \
     nlohmann-json3-dev \
-    libwebsocketpp-dev \
-    libcpprest-dev \
-    libboost-all-dev \
-    libboost-chrono-dev \
-    libboost-date-time-dev \
-    libboost-system-dev \
-    libboost-thread-dev \
-    libboost-filesystem-dev \
-    libboost-regex-dev \
-    libboost-random-dev \
-    libboost-atomic-dev \
-    libgstreamer1.0-dev \
-    libgstreamer-plugins-base1.0-dev \
-    gstreamer1.0-plugins-good \
-    gstreamer1.0-plugins-bad \
-    gstreamer1.0-plugins-ugly \
-    gstreamer1.0-tools \
     libpipewire-0.3-dev \
     pipewire \
     pipewire-audio-client-libraries \
@@ -65,109 +46,25 @@ apt-get install -y \
 
 echo ""
 echo "==================================="
-echo "Building jwt-cpp..."
-echo "==================================="
-if [ ! -d "jwt-cpp" ]; then
-    git clone https://github.com/Thalhammer/jwt-cpp.git
-fi
-
-cd jwt-cpp
-rm -rf build
-mkdir -p build
-cd build
-cmake .. \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX=/usr/local \
-    -DJWT_BUILD_EXAMPLES=OFF \
-    -DJWT_BUILD_TESTS=OFF
-make -j1
-make install
-cd ../..
-echo "✓ jwt-cpp installed"
-
-echo ""
-echo "==================================="
-echo "Building nlohmann_json_schema_validator..."
-echo "==================================="
-if [ ! -d "json-schema-validator" ]; then
-    git clone https://github.com/pboettch/json-schema-validator.git
-fi
-
-cd json-schema-validator
-rm -rf build
-mkdir -p build
-cd build
-cmake .. \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DBUILD_SHARED_LIBS=ON \
-    -DCMAKE_INSTALL_PREFIX=/usr/local \
-    -DBUILD_TESTS=OFF \
-    -DBUILD_EXAMPLES=OFF
-make -j1
-make install
-ldconfig
-cd ../..
-echo "✓ nlohmann_json_schema_validator installed"
-
-echo ""
-echo "==================================="
-echo "Building nmos-cpp..."
-echo "This will take 60-90 minutes..."
-echo "==================================="
-if [ ! -d "nmos-cpp" ]; then
-    git clone --recurse-submodules https://github.com/sony/nmos-cpp.git
-else
-    cd nmos-cpp
-    git pull
-    git submodule update --init --recursive
-    cd ..
-fi
-
-cd nmos-cpp/Development
-rm -rf build
-mkdir -p build
-cd build
-
-# Configure with proper Boost settings
-cmake .. \
-    -DCMAKE_BUILD_TYPE=Release \
-    -DBUILD_SHARED_LIBS=ON \
-    -DCMAKE_INSTALL_PREFIX=/usr/local \
-    -DWEBSOCKETPP_INCLUDE_DIR=/usr/include \
-    -DBoost_USE_STATIC_LIBS=OFF \
-    -DBoost_USE_MULTITHREADED=ON \
-    -DCMAKE_EXE_LINKER_FLAGS="-lboost_chrono"
-    
-# Build with single job to avoid OOM
-echo "Starting compilation (this is slow but stable)..."
-make -j1
-
-make install
-ldconfig
-cd ../../..
-echo "✓ nmos-cpp installed"
-
-echo ""
-echo "==================================="
-echo "Building AES67 receiver..."
+echo "Building RPi-AES67..."
 echo "==================================="
 rm -rf build
 mkdir -p build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
-make -j1
+make -j$(nproc)
 make install
 cd ..
-echo "✓ AES67 receiver installed"
+echo "✓ RPi-AES67 built and installed"
 
 echo ""
 echo "==================================="
 echo "Setting up configuration..."
 echo "==================================="
-mkdir -p /etc/aes67-receiver
-if [ ! -f /etc/aes67-receiver/config.json ]; then
+mkdir -p /etc/rpi-aes67
+if [ ! -f /etc/rpi-aes67/config.json ]; then
     if [ -f config/config.json ]; then
-        cp config/config.json /etc/aes67-receiver/
+        cp config/config.json /etc/rpi-aes67/
         echo "✓ Configuration copied"
     else
         echo "⚠ config/config.json not found, skipping"
@@ -183,14 +80,14 @@ else
     echo "✓ User 'aes67' already exists"
 fi
 
-echo "Installing systemd service..."
-if [ -f systemd/aes67-receiver.service ]; then
-    cp systemd/aes67-receiver.service /etc/systemd/system/
-    systemctl daemon-reload
-    echo "✓ Systemd service installed"
-else
-    echo "⚠ systemd/aes67-receiver.service not found, skipping"
-fi
+echo "Installing systemd services..."
+for service in aes67-sender.service aes67-receiver.service aes67-bidirectional.service; do
+    if [ -f systemd/$service ]; then
+        cp systemd/$service /etc/systemd/system/
+        echo "✓ Installed $service"
+    fi
+done
+systemctl daemon-reload
 
 echo "Configuring PipeWire..."
 mkdir -p /etc/pipewire
@@ -208,6 +105,14 @@ echo "Enabling services..."
 systemctl enable pipewire 2>/dev/null || true
 systemctl enable wireplumber 2>/dev/null || true
 
+# Configure real-time audio settings
+echo "Configuring real-time audio settings..."
+if ! grep -q "@audio - rtprio 95" /etc/security/limits.conf; then
+    echo "@audio - rtprio 95" >> /etc/security/limits.conf
+    echo "@audio - memlock unlimited" >> /etc/security/limits.conf
+    echo "✓ Real-time audio settings configured"
+fi
+
 # Make swap permanent
 if ! grep -q "/swapfile" /etc/fstab; then
     echo '/swapfile none swap sw 0 0' >> /etc/fstab
@@ -220,16 +125,18 @@ echo "Installation Complete!"
 echo "==================================="
 echo ""
 echo "✓ All dependencies installed"
-echo "✓ nmos-cpp built and installed"
-echo "✓ AES67 receiver built and installed"
-echo "✓ 4GB swap file created and enabled"
+echo "✓ RPi-AES67 built and installed"
+echo "✓ SystemD services installed"
 echo ""
 echo "Next steps:"
 echo "1. Configure network: sudo ./scripts/setup_network.sh eth0"
 echo "2. Setup PTP: sudo ./scripts/setup_ptp.sh eth0"
-echo "3. Edit configuration: /etc/aes67-receiver/config.json"
-echo "4. Start service: sudo systemctl start aes67-receiver"
-echo "5. Check status: sudo systemctl status aes67-receiver"
+echo "3. Edit configuration: /etc/rpi-aes67/config.json"
+echo "4. Start service:"
+echo "   - For bidirectional: sudo systemctl start aes67-bidirectional"
+echo "   - For sender only: sudo systemctl start aes67-sender"
+echo "   - For receiver only: sudo systemctl start aes67-receiver"
+echo "5. Check status: sudo systemctl status aes67-bidirectional"
 echo ""
-echo "Note: Swap file will persist after reboot"
+echo "Access NMOS API at: http://localhost:8080/x-nmos/node/v1.3/"
 echo ""
